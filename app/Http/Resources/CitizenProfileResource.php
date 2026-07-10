@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
+
+class CitizenProfileResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+
+            'user' => [
+                'id' => $this->user?->id,
+                'name' => $this->user?->name,
+                'email' => $this->user?->email,
+                'phone_number' => $this->user?->phone_number,
+            ],
+
+            'full_name' => $this->full_name,
+            'gender' => $this->gender,
+            'birth_date' => $this->birth_date?->toDateString(),
+            'national_id' => $this->national_id,
+            'address' => $this->address,
+
+            'front_id_photo' => $this->front_id_photo
+                ? Storage::disk('public')->url($this->front_id_photo)
+                : null,
+
+            'back_id_photo' => $this->back_id_photo
+                ? Storage::disk('public')->url($this->back_id_photo)
+                : null,
+
+            'is_verified' => (bool) $this->is_verified,
+
+            'created_at' => $this->created_at?->toDateTimeString(),
+            'updated_at' => $this->updated_at?->toDateTimeString(),
+        ];
+    }
+}
