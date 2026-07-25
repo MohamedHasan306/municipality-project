@@ -46,13 +46,27 @@ class PasswordResetService
                 'otp' => ['رمز التحقق غير صحيح.'],
             ]);
         }
+
+        $record->update([
+            'verified_at' => now(),
+        ]);
     }
 
     public function resetPassword(array $data): void
     {
         $record = $this->getValidOtpRecord($data['email']);
 
+        if (! $record->verified_at) {
+            throw ValidationException::withMessages([
+                'otp' => ['The OTP must be verified before changing the password.'],
+            ]);
+        }
 
+        if ($record->verified_at->addMinutes(10)->isPast()) {
+            throw ValidationException::withMessages([
+                'otp' => ['The grace period has expired after code verification. Please request a new code.'],
+            ]);
+        }
 
         $user = User::where('email', $data['email'])->first();
 
@@ -65,13 +79,11 @@ class PasswordResetService
         $user->update([
             'password' => Hash::make($data['password']),
             'must_change_password' => false,
-
         ]);
 
         $record->update([
             'used_at' => now(),
         ]);
-
 
         $user->tokens()->delete();
     }

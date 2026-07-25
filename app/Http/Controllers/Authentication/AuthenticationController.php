@@ -41,7 +41,7 @@ class AuthenticationController extends Controller
             'token' => $result['token'],
             'requires_password_change' => $result['requires_password_change'],
             'user' => new UserResource($result['user']),
-        ], $message);
+        ], $message,200);
     }
     public function registerCitizen(RegisterCitizenRequest $request)
     {

@@ -12,6 +12,7 @@ class PasswordResetOtp extends Model
         'expires_at',
         'used_at',
         'attempts',
+        'verified_at',
     ];
 
     protected $casts = [

@@ -58,7 +58,7 @@ class DemoUsersSeeder extends Seeder
             [
                 'full_name' => 'Municipality Administrator',
                 'email' => 'municipality_admin@municipality.test',
-                'phone_number' => '0595555555',
+                'phone_number' => '0595555556',
                 'national_id' => 'EMP-1006',
                 'role' => 'municipality_admin',
             ],
