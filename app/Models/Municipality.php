@@ -12,4 +12,14 @@ class Municipality extends Model
     public function employee(){
         return $this->hasmany(EmployeeProfile::class);
     }
+
+    public function governorate()
+    {
+        return $this->belongsTo(Governorate::class);
+    }
+
+    public function citizenProfiles()
+    {
+        return $this->hasMany(CitizenProfile::class);
+    }
 }

@@ -17,22 +17,16 @@ class UpdateMunicipalityRequest extends FormRequest
         $municipalityId = $this->route('municipality')?->id ?? $this->route('municipality');
 
         return [
-            'name' => [
-                'sometimes',
-                'required',
-                'string',
-                'max:255',
+            'name' => ['sometimes', 'required', 'string', 'max:255',
                 Rule::unique('municipalities', 'name')->ignore($municipalityId),
             ],
             'address' => ['sometimes', 'required', 'string', 'max:255'],
             'phone' => ['sometimes', 'required', 'string', 'max:30'],
-            'email' => [
-                'sometimes',
-                'required',
-                'email',
+            'email' => ['sometimes', 'required', 'email',
                 Rule::unique('municipalities', 'email')->ignore($municipalityId),
             ],
             'status' => ['sometimes', 'boolean'],
+            'governorate_id' => ['required', 'exists:governorates,id'],
         ];
     }
 }

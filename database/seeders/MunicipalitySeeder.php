@@ -10,8 +10,9 @@ class MunicipalitySeeder extends Seeder
     public function run(): void
     {
         Municipality::firstOrCreate(
-            ['email' => 'nablus@municipality.test'],
+            ['email' => 'kafarsouseh@municipality.test'],
             [
+                'governorate_id' => 1,
                 'name' => 'بلدية كفرسوسة',
                 'address' => 'دمشق_كفرسوسة',
                 'phone' => '092000000',

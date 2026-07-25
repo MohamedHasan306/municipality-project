@@ -13,8 +13,14 @@ class CitizenProfile extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function municipality()
+    {
+        return $this->belongsTo(Municipality::class);
+    }
+
     protected $casts = [
         'birth_date' => 'date',
+        'needs_special_care' => 'boolean',
         'is_verified' => 'boolean',
     ];
 }

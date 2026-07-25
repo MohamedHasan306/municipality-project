@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('municipalities', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('governorate_id')
+                ->constrained('governorates')
+                ->cascadeOnDelete();
             $table->string('name');
             $table->string('address');
             $table->string('phone');

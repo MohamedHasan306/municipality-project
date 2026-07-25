@@ -6,6 +6,7 @@ use App\Http\Controllers\Authentication\AuthenticationController;
 use App\Http\Controllers\Authentication\CitizenVerificationController;
 use App\Http\Controllers\Authentication\PasswordResetController;
 use App\Http\Controllers\EmployeeRoleController;
+use App\Http\Controllers\GovernoratesController;
 use App\Http\Controllers\MunicipalityController;
 use App\Http\Controllers\RolePermissionController;
 use Illuminate\Support\Facades\Route;
@@ -180,4 +181,10 @@ Route::middleware(['auth:sanctum', 'password.changed'])->group(function () {
         Route::get('/permissions', [RolePermissionController::class, 'permissions']);
         Route::post('/roles/{role}/permissions', [RolePermissionController::class, 'syncPermissions']);
     });
+});
+
+
+Route::prefix('public')->controller(GovernoratesController::class)->group(function () {
+    Route::get('/governorates', 'index');
+    Route::get('/governorates/{governorate}/municipalities', 'municipalities');
 });

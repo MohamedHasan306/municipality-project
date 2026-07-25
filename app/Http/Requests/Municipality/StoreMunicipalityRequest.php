@@ -19,6 +19,7 @@ class StoreMunicipalityRequest extends FormRequest
             'phone' => ['required', 'string', 'max:30'],
             'email' => ['required', 'email', 'unique:municipalities,email'],
             'status' => ['nullable', 'boolean'],
+            'governorate_id' => ['required', 'exists:governorates,id'],
         ];
     }
 }

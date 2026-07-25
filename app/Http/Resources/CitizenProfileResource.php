@@ -15,7 +15,7 @@ class CitizenProfileResource extends JsonResource
 
             'user' => [
                 'id' => $this->user?->id,
-                'name' => $this->user?->name,
+                'full_name' => $this->user?->full_name,
                 'email' => $this->user?->email,
                 'phone_number' => $this->user?->phone_number,
             ],
@@ -25,6 +25,7 @@ class CitizenProfileResource extends JsonResource
             'birth_date' => $this->birth_date?->toDateString(),
             'national_id' => $this->national_id,
             'address' => $this->address,
+            'needs_special_care' => (bool) $this->needs_special_care,
 
             'front_id_photo' => $this->front_id_photo
                 ? Storage::disk('public')->url($this->front_id_photo)

@@ -24,7 +24,7 @@ class PasswordResetService
             ->whereNull('used_at')
             ->delete();
 
-        $otp = (string) random_int(100000, 999999);
+        $otp = (string) random_int(1000, 9999);
 
         PasswordResetOtp::create([
             'email' => $email,

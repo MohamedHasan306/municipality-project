@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
 
 
         $this->call([
+            GovernorateSeeder::class,
             RolePermissionSeeder::class,
             MunicipalitySeeder::class,
             AdminUserSeeder::class,

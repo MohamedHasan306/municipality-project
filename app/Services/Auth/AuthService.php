@@ -64,7 +64,8 @@ class AuthService
     {
         return DB::transaction(function () use ($data) {
             $user = User::create([
-                'name' => $data['name'],
+
+                'full_name' => $data['full_name'],
                 'phone_number' => $data['phone_number'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
@@ -73,14 +74,15 @@ class AuthService
 
             CitizenProfile::create([
                 'user_id' => $user->id,
-                'full_name' => $data['full_name'],
+                'municipality_id' => $data['municipality_id'],
                 'gender' => $data['gender'],
                 'birth_date' => $data['birth_date'],
                 'national_id' => $data['national_id'],
-                'address' => $data['address'],
+                'place_of_birth' => $data['place_of_birth'],
                 'front_id_photo' => $data['front_id_photo_path'] ?? null,
                 'back_id_photo' => $data['back_id_photo_path'] ?? null,
                 'is_verified' => false,
+                'needs_special_care' => $data['needs_special_care'] ?? false,
 
             ]);
 
@@ -117,7 +119,7 @@ class AuthService
             }
 
             $user = User::create([
-                'name' => $data['name'],
+                'full_name' => $data['name'],
                 'phone_number' => $data['phone_number'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),

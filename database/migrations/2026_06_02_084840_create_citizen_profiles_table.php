@@ -14,13 +14,14 @@ return new class extends Migration
         Schema::create('citizen_profiles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('full_name');
+            $table->foreignId('municipality_id')->constrained('municipalities')->cascadeOnDelete();
             $table->enum('gender', ['Male', 'Female'])->default('Male');
             $table->date('birth_date');
             $table->string('national_id')->unique();
             $table->string('front_id_photo')->nullable();
             $table->string('back_id_photo')->nullable();
-            $table->string('address');
+            $table->string('place_of_birth')->nullable();
+            $table->boolean('needs_special_care')->default(false);
             $table->boolean('is_verified')->default(false);
             $table->timestamps();
         });

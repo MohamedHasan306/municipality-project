@@ -13,7 +13,7 @@ class DemoUsersSeeder extends Seeder
 {
     public function run(): void
     {
-        $municipality = Municipality::where('email', 'nablus@municipality.test')->first();
+        $municipality = Municipality::where('email', 'kafarsouseh@municipality.test')->first();
 
         if (! $municipality) {
             return;
@@ -21,42 +21,42 @@ class DemoUsersSeeder extends Seeder
 
         $employees = [
             [
-                'name' => 'Technical Office',
+                'full_name' => 'Technical Office',
                 'email' => 'technical@municipality.test',
                 'phone_number' => '0591111111',
                 'national_id' => 'EMP-1001',
                 'role' => 'technical_office',
             ],
             [
-                'name' => 'Mayor User',
+                'full_name' => 'Mayor User',
                 'email' => 'mayor@municipality.test',
                 'phone_number' => '0592222222',
                 'national_id' => 'EMP-1002',
                 'role' => 'mayor',
             ],
             [
-                'name' => 'Engineering Office',
+                'full_name' => 'Engineering Office',
                 'email' => 'engineering@municipality.test',
                 'phone_number' => '0593333333',
                 'national_id' => 'EMP-1003',
                 'role' => 'engineering_office',
             ],
             [
-                'name' => 'Department Manager',
+                'full_name' => 'Department Manager',
                 'email' => 'manager@municipality.test',
                 'phone_number' => '0594444444',
                 'national_id' => 'EMP-1004',
                 'role' => 'department_manager',
             ],
             [
-                'name' => 'Field Inspector',
+                'full_name' => 'Field Inspector',
                 'email' => 'inspector@municipality.test',
                 'phone_number' => '0595555555',
                 'national_id' => 'EMP-1005',
                 'role' => 'field_inspector',
             ],
             [
-                'name' => 'Municipality Administrator',
+                'full_name' => 'Municipality Administrator',
                 'email' => 'municipality_admin@municipality.test',
                 'phone_number' => '0595555555',
                 'national_id' => 'EMP-1006',
@@ -68,7 +68,7 @@ class DemoUsersSeeder extends Seeder
             $user = User::firstOrCreate(
                 ['email' => $employeeData['email']],
                 [
-                    'name' => $employeeData['name'],
+                    'full_name' => $employeeData['full_name'],
                     'phone_number' => $employeeData['phone_number'],
                     'password' => Hash::make('password123'),
                 ]
@@ -89,24 +89,24 @@ class DemoUsersSeeder extends Seeder
 
         $citizens = [
             [
-                'name' => 'Ahmad Citizen',
                 'email' => 'ahmad@citizen.test',
                 'phone_number' => '0596666666',
                 'full_name' => 'Ahmad Ali',
                 'gender' => 'Male',
                 'birth_date' => '2000-01-01',
+                'place_of_birth' => 'دمشق',
                 'national_id' => 'CIT-1001',
-                'address' => 'Nablus',
+                'needs_special_care' => false,
             ],
             [
-                'name' => 'Sara Citizen',
                 'email' => 'sara@citizen.test',
                 'phone_number' => '0597777777',
                 'full_name' => 'Sara Ahmad',
                 'gender' => 'Female',
                 'birth_date' => '1999-05-15',
+                'place_of_birth' => 'ريف دمشق',
                 'national_id' => 'CIT-1002',
-                'address' => 'Nablus',
+                'needs_special_care' => true,
             ],
         ];
 
@@ -114,7 +114,7 @@ class DemoUsersSeeder extends Seeder
             $user = User::firstOrCreate(
                 ['email' => $citizenData['email']],
                 [
-                    'name' => $citizenData['name'],
+                    'full_name' => $citizenData['full_name'],
                     'phone_number' => $citizenData['phone_number'],
                     'password' => Hash::make('password123'),
                 ]
@@ -123,11 +123,13 @@ class DemoUsersSeeder extends Seeder
             CitizenProfile::firstOrCreate(
                 ['user_id' => $user->id],
                 [
-                    'full_name' => $citizenData['full_name'],
+
+                    'municipality_id' => $municipality->id,
                     'gender' => $citizenData['gender'],
                     'birth_date' => $citizenData['birth_date'],
+                    'place_of_birth' => $citizenData['place_of_birth'],
                     'national_id' => $citizenData['national_id'],
-                    'address' => $citizenData['address'],
+                    'needs_special_care' => $citizenData['needs_special_care'],
                     'is_verified' => true,
                 ]
             );
