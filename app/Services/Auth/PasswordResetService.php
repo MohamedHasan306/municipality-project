@@ -107,7 +107,7 @@ class PasswordResetService
             ]);
         }
 
-        if ($record->attempts >= 5) {
+        if ($record->attempts >= 15) {
             throw ValidationException::withMessages([
                 'otp' => ['The maximum number of attempts has been exceeded. Request a new code.'],
             ]);
