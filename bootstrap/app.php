@@ -16,6 +16,7 @@ use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 use Laravel\Sanctum\Http\Middleware\CheckAbilities;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -36,6 +37,9 @@ return Application::configure(basePath: dirname(__DIR__))
             ]);
 
     })
+
+
+
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (ValidationException $e, $request) {
             if ($request->expectsJson()) {
@@ -73,13 +77,26 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        $exceptions->render(function (ModelNotFoundException $e, $request) {
+        $exceptions->render(function (NotFoundHttpException $e, $request) {
             if ($request->expectsJson() || $request->is('api/*')) {
-                $model = class_basename($e->getModel());
+                $previousException = $e->getPrevious();
 
+                if ($previousException instanceof ModelNotFoundException) {
+                    $model = class_basename($previousException->getModel());
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => "{$model} was not found.",
+                        'data' => null,
+                        'errors' => null,
+                        'status' => 404,
+                    ], 404);
+                }
+
+                // في حال كان رابط الـ API نفسه غير موجود
                 return response()->json([
                     'success' => false,
-                    'message' => "{$model} was not found.",
+                    'message' => 'The requested endpoint was not found.',
                     'data' => null,
                     'errors' => null,
                     'status' => 404,

@@ -62,7 +62,7 @@ class PasswordResetService
             ]);
         }
 
-        if ($record->verified_at->addMinutes(10)->isPast()) {
+        if ($record->verified_at->copy()->addMinutes(10)->isPast()) {
             throw ValidationException::withMessages([
                 'otp' => ['The grace period has expired after code verification. Please request a new code.'],
             ]);
