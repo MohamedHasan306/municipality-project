@@ -16,83 +16,62 @@ class RolePermissionSeeder extends Seeder
         $guard = 'web';
 
         $permissions = [
-            /*
-            |--------------------------------------------------------------------------
-            | Platform / System Admin
-            |--------------------------------------------------------------------------
-            */
+            'manage municipalities',
+            'activate municipalities',
+            'manage municipality admins',
+            'manage roles',
 
-            'manage municipalities',          // إدارة البلديات
-            'activate municipalities',        // تفعيل / تعطيل البلديات
-            'manage municipality admins',     // إنشاء / إدارة مسؤول البلدية
-            'manage roles',                   // إدارة الأدوار والصلاحيات العامة
+            'manage municipality employees',
+            'assign roles to employees',
+            'suspend employees',
+            'force employee password change',
 
-            /*
-            |--------------------------------------------------------------------------
-            | Municipality Admin
-            |--------------------------------------------------------------------------
-            */
+            'request password reset',
+            'reset password',
 
-            'manage municipality employees',  // إنشاء / تعديل موظفي البلدية
-            'assign roles to employees',      // إسناد roles للموظفين
-            'suspend employees',              // تعطيل حساب موظف
-            'force employee password change', // إجبار موظف على تغيير كلمة المرور
+            'upload identity photos',
+            'verify citizens',
+            'reject citizen verification',
 
-            /*
-            |--------------------------------------------------------------------------
-            | Auth / Password
-            |--------------------------------------------------------------------------
-            */
+            'create complaint',
+            'update own complaint draft',
+            'delete own complaint draft',
+            'submit complaint',
+            'view own complaints',
+            'view own complaint history',
 
-            'request password reset',         // طلب استعادة كلمة المرور
-            'reset password',                 // إعادة تعيين كلمة المرور
+            'view municipality complaints',
+            'view municipality complaint reports',
+            'view complaint status history',
 
-            /*
-            |--------------------------------------------------------------------------
-            | Citizen Verification
-            |--------------------------------------------------------------------------
-            */
+            'review complaints',
+            'detect similar complaints',
+            'merge complaint reports',
+            'assign complaints',
+            'assign complaints to work units',
+            'reject complaint reports',
 
-            'upload identity photos',         // رفع صور الهوية
-            'verify citizens',                // توثيق المواطن
-            'reject citizen verification',    // رفض توثيق المواطن - مبدئيًا قد لا تستخدمها
+            'execute complaints',
+            'resolve complaints',
+            'reject complaints',
 
-            /*
-            |--------------------------------------------------------------------------
-            | Complaints
-            |--------------------------------------------------------------------------
-            */
+            'view work unit complaints',
+            'manage work units',
 
-            'create complaint',               // إنشاء شكوى
-            'view own complaints',            // عرض شكاوى المواطن الخاصة
-            'review complaints',              // مراجعة الشكاوى
-            'assign complaints',              // تحويل الشكوى إلى القسم المختص
-            'execute complaints',             // تنفيذ الشكوى
-            'resolve complaints',             // حل الشكوى
-            'reject complaints',              // رفض الشكوى
+            'manage complaint categories',
 
-            /*
-            |--------------------------------------------------------------------------
-            | Municipal Services / Transactions
-            |--------------------------------------------------------------------------
-            */
+            'view complaint statistics',
 
-            'manage service types',           // إدارة أنواع الخدمات
-            'manage service forms',           // إدارة نماذج الخدمات
-            'submit service request',         // تقديم معاملة
-            'review service requests',        // مراجعة المعاملة
-            'engineering approve service requests', // موافقة المكتب الهندسي
-            'mayor approve service requests',       // اعتماد رئيس البلدية
+            'manage service types',
+            'manage service forms',
+            'submit service request',
+            'review service requests',
+            'engineering approve service requests',
+            'mayor approve service requests',
 
-            /*
-            |--------------------------------------------------------------------------
-            | Documents
-            |--------------------------------------------------------------------------
-            */
-
-            'issue documents',                // إصدار الوثائق
-            'sign documents',                 // توقيع الوثائق
-            'verify documents',               // التحقق من الوثائق
+            'issue documents',
+            'sign documents',
+            'verify documents',
         ];
 
         foreach ($permissions as $permission) {
@@ -101,12 +80,6 @@ class RolePermissionSeeder extends Seeder
                 'guard_name' => $guard,
             ]);
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | Roles
-        |--------------------------------------------------------------------------
-        */
 
         $systemAdmin = Role::firstOrCreate([
             'name' => 'system_admin',
@@ -148,116 +121,96 @@ class RolePermissionSeeder extends Seeder
             'guard_name' => $guard,
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | System Admin Permissions
-        |--------------------------------------------------------------------------
-        |
-        | يدير المنصة نفسها:
-        | - البلديات
-        | - تفعيل البلديات
-        | - إنشاء أول مسؤول لكل بلدية
-        | - إدارة الأدوار العامة
-        |
-        */
-
         $systemAdmin->syncPermissions([
             'manage municipality employees',
             'manage municipalities',
             'activate municipalities',
             'manage municipality admins',
             'manage roles',
+            'manage complaint categories',
         ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | Municipality Admin Permissions
-        |--------------------------------------------------------------------------
-        |
-        | مسؤول البلدية يدير موظفي بلديته فقط.
-        | لا نعطيه manage municipalities لأنه لا ينشئ بلديات جديدة.
-        |
-        */
 
         $municipalityAdmin->syncPermissions([
             'manage municipality employees',
             'assign roles to employees',
             'suspend employees',
             'force employee password change',
+
             'verify citizens',
             'reject citizen verification',
+
             'manage service types',
             'manage service forms',
-        ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Citizen Permissions
-        |--------------------------------------------------------------------------
-        */
+            'manage work units',
+
+            'view municipality complaints',
+            'view municipality complaint reports',
+            'view complaint status history',
+            'view complaint statistics',
+        ]);
 
         $citizen->syncPermissions([
             'request password reset',
             'reset password',
             'upload identity photos',
+
             'create complaint',
+            'update own complaint draft',
+            'delete own complaint draft',
+            'submit complaint',
             'view own complaints',
+            'view own complaint history',
+
             'submit service request',
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Technical Office Permissions
-        |--------------------------------------------------------------------------
-        */
-
         $technicalOffice->syncPermissions([
+            'view municipality complaints',
+            'view municipality complaint reports',
+            'view complaint status history',
+            'view complaint statistics',
+
             'review complaints',
+            'detect similar complaints',
+            'merge complaint reports',
             'assign complaints',
+            'assign complaints to work units',
+
+            'reject complaint reports',
             'reject complaints',
+
             'review service requests',
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Department Manager Permissions
-        |--------------------------------------------------------------------------
-        */
-
         $departmentManager->syncPermissions([
+            'view municipality complaints',
+            'view municipality complaint reports',
+            'view complaint status history',
+            'view work unit complaints',
+
             'execute complaints',
             'resolve complaints',
             'reject complaints',
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Field Inspector Permissions
-        |--------------------------------------------------------------------------
-        */
-
         $fieldInspector->syncPermissions([
+            'view work unit complaints',
+            'view complaint status history',
             'execute complaints',
             'resolve complaints',
         ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | Engineering Office Permissions
-        |--------------------------------------------------------------------------
-        */
 
         $engineeringOffice->syncPermissions([
             'engineering approve service requests',
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Mayor Permissions
-        |--------------------------------------------------------------------------
-        */
-
         $mayor->syncPermissions([
+            'view municipality complaints',
+            'view municipality complaint reports',
+            'view complaint status history',
+            'view complaint statistics',
+
             'mayor approve service requests',
             'issue documents',
             'sign documents',

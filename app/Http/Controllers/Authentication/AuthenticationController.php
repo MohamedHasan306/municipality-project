@@ -9,11 +9,8 @@ use App\Http\Requests\Auth\RegisterCitizenRequest;
 use App\Http\Requests\Auth\RegisterEmployeeRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Traits\ApiResponse;
-use App\Models\User;
 use App\Services\Auth\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthenticationController extends Controller
 {

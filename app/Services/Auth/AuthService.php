@@ -2,10 +2,10 @@
 
 namespace App\Services\Auth;
 
-use App\Http\Traits\ApiResponse;
-use App\Models\User;
 use App\Models\CitizenProfile;
 use App\Models\EmployeeProfile;
+use App\Http\Traits\ApiResponse;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;

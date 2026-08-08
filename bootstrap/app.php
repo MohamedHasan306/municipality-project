@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsurePasswordIsChanged;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
@@ -16,6 +17,7 @@ use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 use Laravel\Sanctum\Http\Middleware\CheckAbilities;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
@@ -101,6 +103,30 @@ return Application::configure(basePath: dirname(__DIR__))
                     'errors' => null,
                     'status' => 404,
                 ], 404);
+            }
+        });
+
+//        $exceptions->render(function (AuthorizationException $e, $request) {
+//            if ($request->expectsJson() || $request->is('api/*')) {
+//                return response()->json([
+//                    'success' => false,
+//                    'message' => 'You do not have permission to perform this action.',
+//                    'data' => null,
+//                    'errors' => null,
+//                    'status' => 403,
+//                ], 403);
+//            }
+//        });
+
+        $exceptions->render(function (AccessDeniedHttpException $e, $request) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You do not have permission to perform this action.',
+                    'data' => null,
+                    'errors' => null,
+                    'status' => 403,
+                ], 403);
             }
         });
 
