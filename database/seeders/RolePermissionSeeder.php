@@ -161,6 +161,7 @@ class RolePermissionSeeder extends Seeder
             'submit complaint',
             'view own complaints',
             'view own complaint history',
+            'view municipality complaints',
 
             'submit service request',
         ]);

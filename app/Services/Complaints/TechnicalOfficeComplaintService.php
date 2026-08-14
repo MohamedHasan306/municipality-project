@@ -18,7 +18,7 @@ class TechnicalOfficeComplaintService
 
     public function paginate(User $user, array $filters, int $perPage = 15): LengthAwarePaginator
     {
-        $municipalityId = $this->employeeMunicipalityId($user);
+        $municipalityId = $this->MunicipalityId($user);
 
         return Complaint::query()
             ->where('complaints.municipality_id', $municipalityId)
@@ -104,23 +104,53 @@ class TechnicalOfficeComplaintService
         return $this->loadComplaint($complaint);
     }
 
-    private function employeeMunicipalityId(User $user): int
+    private function municipalityId(User $user): int
     {
-        $employeeProfile = $user->employeeProfile;
+        if ($user->hasRole('citizen')) {
+            $citizenProfile = $user->citizenProfile;
 
-        if ($employeeProfile === null) {
-            throw new AuthorizationException('This account does not have an employee profile.');
+            if ($citizenProfile === null) {
+                throw new AuthorizationException(
+                    'This account does not have a citizen profile.'
+                );
+            }
+
+            if ($citizenProfile->municipality_id === null) {
+                throw new AuthorizationException(
+                    'This citizen is not associated with a municipality.'
+                );
+            }
+
+            return (int) $citizenProfile->municipality_id;
         }
 
-        if ($employeeProfile->status !== 'active') {
-            throw new AuthorizationException('This employee account is inactive.');
+        if ($user->hasRole('technical_office')) {
+            $employeeProfile = $user->employeeProfile;
+
+            if ($employeeProfile === null) {
+                throw new AuthorizationException(
+                    'This account does not have an employee profile.'
+                );
+            }
+
+            if ($employeeProfile->status !== 'active') {
+                throw new AuthorizationException(
+                    'This employee account is inactive.'
+                );
+            }
+
+            if ($employeeProfile->municipality_id === null) {
+                throw new AuthorizationException(
+                    'This account is not associated with a municipality.'
+                );
+            }
+
+            return (int) $employeeProfile->municipality_id;
         }
 
-        if ($employeeProfile->municipality_id === null) {
-            throw new AuthorizationException('This account is not associated with a municipality.');
-        }
-
-        return (int) $employeeProfile->municipality_id;
+        throw new AuthorizationException(
+            'This account cannot view unified complaints.'
+        );
     }
 
     private function loadComplaint(Complaint $complaint): Complaint

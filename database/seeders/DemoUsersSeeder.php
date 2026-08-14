@@ -131,7 +131,7 @@ class DemoUsersSeeder extends Seeder
 
         $citizens = [
             [
-                'email' => 'ahmad@citizen.test',
+                    'email' => 'ahmad@citizen.test',
                 'phone_number' => '0596666666',
                 'full_name' => 'Ahmad Ali',
                 'gender' => 'Male',

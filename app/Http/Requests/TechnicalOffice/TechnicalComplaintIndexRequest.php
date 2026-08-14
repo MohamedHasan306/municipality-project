@@ -8,7 +8,7 @@ class TechnicalComplaintIndexRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('view municipality complaints') ?? false;
+        return true;
     }
 
     public function rules(): array

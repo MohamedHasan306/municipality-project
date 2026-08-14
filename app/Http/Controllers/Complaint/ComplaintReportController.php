@@ -7,9 +7,11 @@ use App\Http\Requests\Complaint\StoreComplaintDraftRequest;
 use App\Http\Requests\Complaint\SubmitComplaintReportRequest;
 use App\Http\Requests\Complaint\UpdateComplaintDraftRequest;
 use App\Http\Requests\Complaint\UploadComplaintReportImagesRequest;
+use App\Http\Resources\ComplaintCategoryResource;
 use App\Http\Resources\Complaints\ComplaintReportImageResource;
 use App\Http\Resources\Complaints\ComplaintReportResource;
 use App\Http\Traits\ApiResponse;
+use App\Models\ComplaintCategory;
 use App\Models\ComplaintReport;
 use App\Models\ComplaintReportImage;
 use App\Services\Complaints\ComplaintReportService;
@@ -177,4 +179,18 @@ class ComplaintReportController extends Controller
             'تم إرسال الشكوى بنجاح.'
         );
     }
+
+    public function complaintCategory(Request $request): JsonResponse
+    {
+        $categories = ComplaintCategory::whereNull('parent_id')
+            ->with('children')
+            ->get();
+
+        return $this->successResponse(
+            ComplaintCategoryResource::collection($categories)->resolve($request),
+            'تم جلب فئات الشكاوى بنجاح.'
+        );
+    }
+
+
 }

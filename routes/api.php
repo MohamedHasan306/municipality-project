@@ -290,12 +290,7 @@ Route::middleware(['auth:sanctum', 'password.changed'])->group(function () {
         ->prefix('technical-office/complaints')
         ->name('technical-office.complaints.')
         ->group(function () {
-            /*
-             * Get unified complaints.
-             */
-            Route::get('/', [TechnicalOfficeComplaintController::class, 'index'])
-                ->middleware('permission:view municipality complaints')
-                ->name('index');
+
 
             /*
              * Reject a unified complaint and all reports under it.
@@ -374,3 +369,20 @@ Route::middleware(['auth:sanctum', 'password.changed'])->group(function () {
         ->middleware('permission:view complaint statistics')
         ->name('complaints.statistics.index');
 });
+
+    Route::get('/ComplaintCategories',[ComplaintReportController::class,'complaintCategory']);
+
+
+
+
+/*
+          * Get unified complaints.
+          */
+Route::middleware([
+    'auth:sanctum',
+    'password.changed',
+    'role:technical_office|citizen',
+])->get(
+    '/unified-complaints',
+    [TechnicalOfficeComplaintController::class, 'index']
+);

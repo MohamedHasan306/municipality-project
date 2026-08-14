@@ -6,6 +6,8 @@ use App\Models\Complaint;
 use App\Models\ComplaintReport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ComplaintCategory extends Model
 {
@@ -38,7 +40,7 @@ class ComplaintCategory extends Model
         return $this->hasMany(
             ComplaintCategory::class,
             'parent_id'
-        )->orderBy('sort_order');
+        );
     }
 
     public function complaints()

@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
 
             ComplaintDemoSeeder::class,
 
+            DemoUsersSeeder::class,
+
         ]);
     }
 }
