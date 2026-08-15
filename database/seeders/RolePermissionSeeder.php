@@ -64,7 +64,10 @@ class RolePermissionSeeder extends Seeder
 
             'manage service types',
             'manage service forms',
+            'view own service requests',
+            'manage own service request drafts',
             'submit service request',
+            'download own issued documents',
             'review service requests',
             'engineering approve service requests',
             'mayor approve service requests',
@@ -128,6 +131,8 @@ class RolePermissionSeeder extends Seeder
             'manage municipality admins',
             'manage roles',
             'manage complaint categories',
+            'manage service types',
+            'manage service forms',
         ]);
 
         $municipalityAdmin->syncPermissions([
@@ -138,9 +143,6 @@ class RolePermissionSeeder extends Seeder
 
             'verify citizens',
             'reject citizen verification',
-
-            'manage service types',
-            'manage service forms',
 
             'manage work units',
 
@@ -163,7 +165,10 @@ class RolePermissionSeeder extends Seeder
             'view own complaint history',
             'view municipality complaints',
 
+            'view own service requests',
+            'manage own service request drafts',
             'submit service request',
+            'download own issued documents',
         ]);
 
         $technicalOffice->syncPermissions([
@@ -200,6 +205,7 @@ class RolePermissionSeeder extends Seeder
             'view complaint status history',
             'execute complaints',
             'resolve complaints',
+            'verify documents',
         ]);
 
         $engineeringOffice->syncPermissions([
@@ -215,7 +221,6 @@ class RolePermissionSeeder extends Seeder
             'mayor approve service requests',
             'issue documents',
             'sign documents',
-            'verify documents',
         ]);
 
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
