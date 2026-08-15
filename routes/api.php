@@ -632,3 +632,5 @@ Route::middleware(['auth:sanctum','role:system_admin|municipality_admin'])->grou
 
     Route::get('employees', [AuthenticationController::class, 'allEmployees']);
 });
+
+///-------------------------------------
