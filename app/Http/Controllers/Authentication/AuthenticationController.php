@@ -9,6 +9,7 @@ use App\Http\Requests\Auth\RegisterCitizenRequest;
 use App\Http\Requests\Auth\RegisterEmployeeRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Traits\ApiResponse;
+use App\Models\User;
 use App\Services\Auth\AuthService;
 use Illuminate\Http\Request;
 
@@ -101,4 +102,16 @@ class AuthenticationController extends Controller
             'The password has been changed successfully. Please log in again.'
         );
     }
+
+    public function allEmployees(Request $request)
+    {
+
+        $query = User::whereHas('employeeProfile')
+            ->with(['employeeProfile', 'roles'])->get();
+
+        return $this->successResponse($query,"All Employee Profiles");
+
+    }
+
+
 }

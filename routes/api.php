@@ -627,3 +627,8 @@ Route::middleware([
     '/unified-complaints',
     [TechnicalOfficeComplaintController::class, 'index']
 );
+
+Route::middleware(['auth:sanctum','role:system_admin|municipality_admin'])->group(function () {
+
+    Route::get('employees', [AuthenticationController::class, 'allEmployees']);
+});

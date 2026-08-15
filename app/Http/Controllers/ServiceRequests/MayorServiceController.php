@@ -64,6 +64,9 @@ class MayorServiceController extends Controller
         return $this->resourceResponse($request, $serviceRequest, 'Service request rejected successfully.');
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function approveAndIssue(Request $request, ServiceRequest $serviceRequest): JsonResponse
     {
         $validated = $request->validate([
