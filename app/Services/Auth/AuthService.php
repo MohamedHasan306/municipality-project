@@ -2,10 +2,10 @@
 
 namespace App\Services\Auth;
 
-use App\Http\Traits\ApiResponse;
-use App\Models\User;
 use App\Models\CitizenProfile;
 use App\Models\EmployeeProfile;
+use App\Http\Traits\ApiResponse;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -15,8 +15,13 @@ class AuthService
     use ApiResponse;
     public function login(array $data): array
     {
+        $login = $data['login'];
+
         $user = User::with(['citizenProfile', 'employeeProfile'])
-            ->where('email', $data['email'])
+            ->where(function ($query) use ($login) {
+                $query->where('email', $login)
+                    ->orWhere('phone_number', $login);
+            })
             ->first();
 
         if (! $user || ! Hash::check($data['password'], $user->password)) {
@@ -26,7 +31,6 @@ class AuthService
         }
 
         $this->ensureUserCanLogin($user);
-
 
         if ($user->must_change_password && $user->tokens()->exists()) {
             $user->tokens()->delete();
@@ -119,7 +123,7 @@ class AuthService
             }
 
             $user = User::create([
-                'full_name' => $data['name'],
+                'full_name' => $data['full_name'],
                 'phone_number' => $data['phone_number'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),

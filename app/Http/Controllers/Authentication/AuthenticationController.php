@@ -12,8 +12,6 @@ use App\Http\Traits\ApiResponse;
 use App\Models\User;
 use App\Services\Auth\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthenticationController extends Controller
 {
@@ -41,7 +39,7 @@ class AuthenticationController extends Controller
             'token' => $result['token'],
             'requires_password_change' => $result['requires_password_change'],
             'user' => new UserResource($result['user']),
-        ], $message);
+        ], $message,200);
     }
     public function registerCitizen(RegisterCitizenRequest $request)
     {
@@ -104,4 +102,16 @@ class AuthenticationController extends Controller
             'The password has been changed successfully. Please log in again.'
         );
     }
+
+    public function allEmployees(Request $request)
+    {
+
+        $query = User::whereHas('employeeProfile')
+            ->with(['employeeProfile', 'roles'])->get();
+
+        return $this->successResponse($query,"All Employee Profiles");
+
+    }
+
+
 }

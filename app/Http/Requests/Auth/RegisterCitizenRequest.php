@@ -25,7 +25,7 @@ class RegisterCitizenRequest extends FormRequest
         return [
 
             'full_name' => ['required', 'string', 'max:255'],
-            'phone_number' => ['required', 'string', 'max:30'],
+            'phone_number' => ['required', 'string', 'max:30', 'unique:users,phone_number'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'municipality_id' => ['required', 'exists:municipalities,id'],

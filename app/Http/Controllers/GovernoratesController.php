@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Traits\ApiResponse;
+
 use App\Models\Governorate;
 use Illuminate\Http\Request;
 
@@ -36,4 +37,6 @@ class GovernoratesController extends Controller
             'Municipalities retrieved successfully.'
         );
     }
+
+
 }
