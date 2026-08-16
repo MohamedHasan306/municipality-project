@@ -2,6 +2,7 @@
 
 namespace App\Services\Complaints;
 
+use App\Jobs\SendStatusPushNotification;
 use App\Models\Complaint;
 use App\Models\ComplaintReport;
 use App\Models\ComplaintStatus;
@@ -315,6 +316,18 @@ class ComplaintStatusTransitionService
             'note' => $note,
             'is_public' => $isPublic,
         ]);
+
+
+        $report->loadMissing('citizenProfile');
+
+        SendStatusPushNotification::dispatch(
+            userId: (int) $report->citizenProfile->user_id,
+            type: 'complaint_report',
+            entityId: (int) $report->id,
+            status: $targetStatus->key,
+            title: 'تحديث حالة الشكوى',
+            body: "أصبحت حالة الشكوى: {$targetStatus->name}",
+        )->afterCommit();
 
         return $report->refresh();
     }

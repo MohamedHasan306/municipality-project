@@ -11,6 +11,7 @@ use App\Http\Controllers\Complaint\TechnicalOffice\ComplaintAssignmentController
 use App\Http\Controllers\Complaint\TechnicalOffice\ComplaintReviewController;
 use App\Http\Controllers\Complaint\TechnicalOffice\TechnicalOfficeComplaintController;
 use App\Http\Controllers\Complaint\TechnicalOffice\TechnicalOfficeWorkUnitController;
+use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\EmployeeRoleController;
 use App\Http\Controllers\GovernoratesController;
 use App\Http\Controllers\MunicipalityController;
@@ -97,6 +98,10 @@ Route::prefix('public')
 */
 
 Route::middleware(['auth:sanctum', 'password.changed'])->group(function () {
+
+    Route::put('/devices/fcm-token', [DeviceController::class, 'upsertFcmToken']);
+    Route::delete('/devices/fcm-token', [DeviceController::class, 'destroyFcmToken']);
+
 
     /*
     |--------------------------------------------------------------------------

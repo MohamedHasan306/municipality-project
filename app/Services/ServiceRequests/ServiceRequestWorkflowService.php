@@ -2,6 +2,7 @@
 
 namespace App\Services\ServiceRequests;
 
+use App\Jobs\SendStatusPushNotification;
 use App\Models\EmployeeProfile;
 use App\Models\ServiceRequest;
 use App\Models\ServiceStatus;
@@ -168,6 +169,15 @@ class ServiceRequestWorkflowService
             'to_status_id' => $targetStatus->id,
             'changed_by' => $actor->id,
         ]);
+
+        SendStatusPushNotification::dispatch(
+            userId: (int) $lockedRequest->citizenProfile->user_id,
+            type: 'service_request',
+            entityId: (int) $lockedRequest->id,
+            status: $targetStatus->code,
+            title: 'تحديث حالة طلب الخدمة',
+            body: "أصبحت حالة طلب {$lockedRequest->id}: {$targetStatus->name_ar}",
+        )->afterCommit();
 
         return $lockedRequest->fresh($this->employeeRelations());
     }
