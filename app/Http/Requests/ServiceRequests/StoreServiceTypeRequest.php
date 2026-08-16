@@ -3,6 +3,8 @@
 namespace App\Http\Requests\ServiceRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Services\ServiceRequests\ServiceDocumentTemplate;
+use Illuminate\Validation\Rule;
 
 class StoreServiceTypeRequest extends FormRequest
 {
@@ -24,8 +26,7 @@ class StoreServiceTypeRequest extends FormRequest
             'document_template_key' => [
                 'required',
                 'string',
-                'max:100',
-                'regex:/^[a-z][a-z0-9_]*$/',
+                Rule::in([ServiceDocumentTemplate::KEY]),
             ],
             'is_active' => ['sometimes', 'boolean'],
         ];
@@ -34,6 +35,7 @@ class StoreServiceTypeRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'document_template_key.in' => 'Only the unified [standard] document template is supported.',
             'document_template_key.regex' =>
                 'The document template key may contain only lowercase letters, numbers, and underscores.',
         ];

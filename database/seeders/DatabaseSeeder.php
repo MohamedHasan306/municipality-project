@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             ServiceStatusSeeder::class,
             ComplaintCategorySeeder::class,
 
+            ServiceTypeSeeder::class,
+
             DemoUsersSeeder::class,
             WorkUnitSeeder::class,
             AdminUserSeeder::class,

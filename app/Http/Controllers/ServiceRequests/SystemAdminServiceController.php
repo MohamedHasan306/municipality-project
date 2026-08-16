@@ -8,9 +8,11 @@ use App\Http\Requests\ServiceRequests\StoreServiceTypeVersionRequest;
 use App\Http\Resources\ServiceRequests\ServiceTypeResource;
 use App\Http\Traits\ApiResponse;
 use App\Models\ServiceType;
+use App\Services\ServiceRequests\ServiceDocumentTemplate;
 use App\Services\ServiceRequests\ServiceTypeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class SystemAdminServiceController extends Controller
@@ -82,8 +84,7 @@ class SystemAdminServiceController extends Controller
             'document_template_key' => [
                 'sometimes',
                 'string',
-                'max:100',
-                'regex:/^[a-z][a-z0-9_]*$/',
+                Rule::in([ServiceDocumentTemplate::KEY]),
             ],
             'is_active' => ['sometimes', 'boolean'],
         ]);

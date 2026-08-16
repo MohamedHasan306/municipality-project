@@ -15,7 +15,7 @@ return new class extends Migration
                 ->restrictOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('document_template_key');
+            $table->string('document_template_key')->default('standard');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 

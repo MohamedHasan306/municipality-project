@@ -455,7 +455,7 @@ Route::middleware(['auth:sanctum', 'password.changed'])->group(function () {
         ->name('system-admin.service-types.')
         ->group(function () {
             Route::get('/', [SystemAdminServiceController::class, 'index'])
-                ->middleware('permission:manage service types')
+                    ->middleware('permission:manage service types')
                 ->name('index');
 
             Route::post('/', [SystemAdminServiceController::class, 'store'])
@@ -632,5 +632,7 @@ Route::middleware(['auth:sanctum','role:system_admin|municipality_admin'])->grou
 
     Route::get('employees', [AuthenticationController::class, 'allEmployees']);
 });
+
+
 
 ///-------------------------------------

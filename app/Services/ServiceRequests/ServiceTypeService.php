@@ -8,7 +8,7 @@ use App\Models\ServiceTypeVersion;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\View;
+
 use Illuminate\Validation\ValidationException;
 use RuntimeException;
 
@@ -234,17 +234,11 @@ class ServiceTypeService
 
     private function assertTemplateExists(string $templateKey): void
     {
-        if (preg_match('/^[a-z][a-z0-9_]*$/', $templateKey) !== 1) {
+        if ($templateKey !== ServiceDocumentTemplate::KEY) {
             throw ValidationException::withMessages([
-                'document_template_key' => ['The document template key is invalid.'],
-            ]);
-        }
-
-        $viewName = "documents.services.{$templateKey}";
-
-        if (! View::exists($viewName)) {
-            throw ValidationException::withMessages([
-                'document_template_key' => ["The document template [{$viewName}] does not exist."],
+                'document_template_key' => [
+                    'Only the unified [standard] document template is supported.',
+                ],
             ]);
         }
     }

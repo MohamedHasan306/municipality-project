@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\ServiceRequests;
 
+use App\Services\ServiceRequests\ServiceDocumentTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +21,7 @@ class ServiceTypeResource extends JsonResource
             ),
             'name' => $this->name,
             'description' => $this->description,
-            'document_template_key' => $this->document_template_key,
+            'document_template_key' => ServiceDocumentTemplate::KEY,
             'is_active' => $this->is_active,
             'active_version' => $this->when(
                 $this->relationLoaded('activeVersion'),

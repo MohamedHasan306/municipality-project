@@ -7,7 +7,7 @@ use App\Models\GeneratedDocument;
 use App\Models\ServiceRequest;
 use App\Models\ServiceStatus;
 use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
+
 use Carbon\CarbonImmutable;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Encoding\Encoding;
@@ -17,11 +17,13 @@ use Endroid\QrCode\Writer\SvgWriter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\View;
+
 use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Throwable;
+use Mpdf\Mpdf;
+use Mpdf\Output\Destination;
 
 class ServiceDocumentService
 {
@@ -95,7 +97,19 @@ class ServiceDocumentService
                 );
                 $verificationUrl = rtrim((string) config('app.url'), '/')
                     .'/'.ltrim($verificationPath, '/');
-                $qrCodeDataUri = $this->generateQrCodeDataUri($verificationUrl);
+
+                $verificationQrCodeDataUri = $this->generateQrCodeDataUri($verificationUrl);
+
+                $filePath = route(
+                    'field-inspector.documents.file',
+                    ['verificationCode' => $verificationCode],
+                    false
+                );
+
+                $fileUrl = rtrim((string) config('app.url'), '/')
+                    .'/'.ltrim($filePath, '/');
+
+                $fileQrCodeDataUri = $this->generateQrCodeDataUri($fileUrl);
 
                 $pdfBytes = $this->renderPdf(
                     $lockedRequest,
@@ -103,7 +117,9 @@ class ServiceDocumentService
                     $documentNumber,
                     $verificationCode,
                     $verificationUrl,
-                    $qrCodeDataUri,
+                    $verificationQrCodeDataUri,
+                    $fileUrl,
+                    $fileQrCodeDataUri,
                     $issuedAt,
                     $expiresAt,
                     $signedAt
@@ -307,15 +323,16 @@ class ServiceDocumentService
         string $documentNumber,
         string $verificationCode,
         string $verificationUrl,
-        string $qrCodeDataUri,
+        string $verificationQrCodeDataUri,
+        string $fileUrl,
+        string $fileQrCodeDataUri,
         CarbonImmutable $issuedAt,
         CarbonImmutable $expiresAt,
         CarbonImmutable $signedAt
     ): string {
         $serviceType = $serviceRequest->serviceTypeVersion->serviceType;
-        $viewName = $this->resolveTemplateView($serviceType->document_template_key);
 
-        return Pdf::loadView($viewName, [
+        $html = view(ServiceDocumentTemplate::VIEW, [
             'serviceRequest' => $serviceRequest,
             'serviceType' => $serviceType,
             'version' => $serviceRequest->serviceTypeVersion,
@@ -329,28 +346,34 @@ class ServiceDocumentService
             'documentNumber' => $documentNumber,
             'verificationCode' => $verificationCode,
             'verificationUrl' => $verificationUrl,
-            'qrCodeDataUri' => $qrCodeDataUri,
+            'qrCodeDataUri' => $verificationQrCodeDataUri,
+            'fileUrl' => $fileUrl,
+            'fileQrCodeDataUri' => $fileQrCodeDataUri,
             'issuedAt' => $issuedAt,
             'expiresAt' => $expiresAt,
             'signedAt' => $signedAt,
             'signatureAlgorithm' => (string) config('document_signing.algorithm', 'RSA-SHA256'),
-        ])->setPaper('a4')->output();
+        ])->render();
+
+        $pdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'margin_left' => 34,
+            'margin_right' => 34,
+            'margin_top' => 28,
+            'margin_bottom' => 28,
+            'default_font' => 'dejavusans',
+            'autoScriptToLang' => true,
+            'autoLangToFont' => true,
+        ]);
+
+        $pdf->SetTitle("{$serviceType->name} - {$documentNumber}");
+        $pdf->WriteHTML($html);
+
+        return $pdf->Output('', Destination::STRING_RETURN);
     }
 
-    private function resolveTemplateView(string $templateKey): string
-    {
-        if (preg_match('/^[a-z][a-z0-9_]*$/', $templateKey) !== 1) {
-            throw new RuntimeException('The configured document template key is invalid.');
-        }
 
-        $viewName = "documents.services.{$templateKey}";
-
-        if (! View::exists($viewName)) {
-            throw new RuntimeException("The document template [{$viewName}] does not exist.");
-        }
-
-        return $viewName;
-    }
 
     private function generateQrCodeDataUri(string $verificationUrl): string
     {
