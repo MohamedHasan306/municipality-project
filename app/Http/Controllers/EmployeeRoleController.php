@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\AssignEmployeeRoleRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Traits\ApiResponse;
 use App\Models\User;
-use Illuminate\Validation\ValidationException;
 
 class EmployeeRoleController extends Controller
 {

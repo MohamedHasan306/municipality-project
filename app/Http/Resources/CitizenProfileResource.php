@@ -20,11 +20,11 @@ class CitizenProfileResource extends JsonResource
                 'phone_number' => $this->user?->phone_number,
             ],
 
-            'full_name' => $this->full_name,
+
             'gender' => $this->gender,
             'birth_date' => $this->birth_date?->toDateString(),
             'national_id' => $this->national_id,
-            'address' => $this->address,
+            'place_of_birth' => $this->place_of_birth,
             'needs_special_care' => (bool) $this->needs_special_care,
 
             'front_id_photo' => $this->front_id_photo

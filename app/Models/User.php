@@ -3,12 +3,19 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\CitizenProfile;
+use App\Models\ComplaintReport;
+use App\Models\ComplaintWorkUnit;
+use App\Models\EmployeeProfile;
+use App\Models\UserDevice;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -65,6 +72,40 @@ class User extends Authenticatable
     public function employeeProfile()
     {
         return $this->hasOne(EmployeeProfile::class);
+    }
+
+    public function devices(): HasMany
+    {
+        return $this->hasMany(UserDevice::class);
+    }
+
+    public function changedComplaintStatuses(): HasMany
+    {
+        return $this->hasMany(
+            ComplaintStatusHistory::class,
+            'changed_by'
+        );
+    }
+
+    public function linkedComplaintReports(): HasMany
+    {
+        return $this->hasMany(
+            ComplaintReport::class,
+            'linked_by'
+        );
+    }
+
+    public function assignedComplaintWorkUnits(): HasMany
+    {
+        return $this->hasMany(
+            ComplaintWorkUnit::class,
+            'assigned_by'
+        );
+    }
+
+    public function managedWorkUnits(): HasMany
+    {
+        return $this->hasMany(WorkUnit::class, 'department_manager_id');
     }
 
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Municipality\StoreMunicipalityRequest;
 use App\Http\Requests\Municipality\UpdateMunicipalityRequest;
 use App\Http\Resources\MunicipalityResource;

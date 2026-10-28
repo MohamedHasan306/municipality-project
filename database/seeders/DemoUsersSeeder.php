@@ -8,15 +8,18 @@ use App\Models\Municipality;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use RuntimeException;
 
 class DemoUsersSeeder extends Seeder
 {
     public function run(): void
     {
-        $municipality = Municipality::where('email', 'kafarsouseh@municipality.test')->first();
+        $municipality = Municipality::query()
+            ->where('email', 'kafarsouseh@municipality.test')
+            ->first();
 
-        if (! $municipality) {
-            return;
+        if ($municipality === null) {
+            throw new RuntimeException('The Kafarsouseh municipality was not found. Run the municipality seeder first.');
         }
 
         $employees = [
@@ -41,13 +44,53 @@ class DemoUsersSeeder extends Seeder
                 'national_id' => 'EMP-1003',
                 'role' => 'engineering_office',
             ],
+
+            /*
+             * Department managers.
+             */
             [
-                'full_name' => 'Department Manager',
+                'full_name' => 'Electricity Department Manager',
                 'email' => 'manager@municipality.test',
-                'phone_number' => '0594444444',
+                'phone_number' => '0594444401',
                 'national_id' => 'EMP-1004',
                 'role' => 'department_manager',
             ],
+            [
+                'full_name' => 'Water Department Manager',
+                'email' => 'water.manager@municipality.test',
+                'phone_number' => '0594444402',
+                'national_id' => 'EMP-1101',
+                'role' => 'department_manager',
+            ],
+            [
+                'full_name' => 'Roads Department Manager',
+                'email' => 'roads.manager@municipality.test',
+                'phone_number' => '0594444403',
+                'national_id' => 'EMP-1102',
+                'role' => 'department_manager',
+            ],
+            [
+                'full_name' => 'Cleanliness Department Manager',
+                'email' => 'cleanliness.manager@municipality.test',
+                'phone_number' => '0594444404',
+                'national_id' => 'EMP-1103',
+                'role' => 'department_manager',
+            ],
+            [
+                'full_name' => 'Sewer Department Manager',
+                'email' => 'sewer.manager@municipality.test',
+                'phone_number' => '0594444405',
+                'national_id' => 'EMP-1104',
+                'role' => 'department_manager',
+            ],
+            [
+                'full_name' => 'Parks Department Manager',
+                'email' => 'parks.manager@municipality.test',
+                'phone_number' => '0594444406',
+                'national_id' => 'EMP-1105',
+                'role' => 'department_manager',
+            ],
+
             [
                 'full_name' => 'Field Inspector',
                 'email' => 'inspector@municipality.test',
@@ -58,43 +101,42 @@ class DemoUsersSeeder extends Seeder
             [
                 'full_name' => 'Municipality Administrator',
                 'email' => 'municipality_admin@municipality.test',
-                'phone_number' => '0595555555',
+                'phone_number' => '0595555556',
                 'national_id' => 'EMP-1006',
                 'role' => 'municipality_admin',
             ],
         ];
 
         foreach ($employees as $employeeData) {
-            $user = User::firstOrCreate(
-                ['email' => $employeeData['email']],
-                [
-                    'full_name' => $employeeData['full_name'],
-                    'phone_number' => $employeeData['phone_number'],
-                    'password' => Hash::make('password123'),
-                ]
-            );
+            $userValues = [
+                'full_name' => $employeeData['full_name'],
+                'phone_number' => $employeeData['phone_number'],
+                'password' => Hash::make('password123'),
+                'must_change_password' => false,
+            ];
 
-            EmployeeProfile::firstOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'municipality_id' => $municipality->id,
-                    'hire_date' => now()->toDateString(),
-                    'national_id' => $employeeData['national_id'],
-                    'status' => 'active',
-                ]
-            );
+            $user = User::query()->updateOrCreate(['email' => $employeeData['email']], $userValues);
 
-            $user->assignRole($employeeData['role']);
+            $profileValues = [
+                'municipality_id' => $municipality->id,
+                'hire_date' => now()->toDateString(),
+                'national_id' => $employeeData['national_id'],
+                'status' => 'active',
+            ];
+
+            EmployeeProfile::query()->updateOrCreate(['user_id' => $user->id], $profileValues);
+
+            $user->syncRoles([$employeeData['role']]);
         }
 
         $citizens = [
             [
-                'email' => 'ahmad@citizen.test',
+                    'email' => 'ahmad@citizen.test',
                 'phone_number' => '0596666666',
                 'full_name' => 'Ahmad Ali',
                 'gender' => 'Male',
                 'birth_date' => '2000-01-01',
-                'place_of_birth' => 'دمشق',
+                'place_of_birth' => 'Damascus',
                 'national_id' => 'CIT-1001',
                 'needs_special_care' => false,
             ],
@@ -104,37 +146,37 @@ class DemoUsersSeeder extends Seeder
                 'full_name' => 'Sara Ahmad',
                 'gender' => 'Female',
                 'birth_date' => '1999-05-15',
-                'place_of_birth' => 'ريف دمشق',
+                'place_of_birth' => 'Rural Damascus',
                 'national_id' => 'CIT-1002',
                 'needs_special_care' => true,
             ],
         ];
 
         foreach ($citizens as $citizenData) {
-            $user = User::firstOrCreate(
-                ['email' => $citizenData['email']],
-                [
-                    'full_name' => $citizenData['full_name'],
-                    'phone_number' => $citizenData['phone_number'],
-                    'password' => Hash::make('password123'),
-                ]
-            );
+            $userValues = [
+                'full_name' => $citizenData['full_name'],
+                'phone_number' => $citizenData['phone_number'],
+                'password' => Hash::make('password123'),
+                'must_change_password' => false,
+            ];
 
-            CitizenProfile::firstOrCreate(
-                ['user_id' => $user->id],
-                [
+            $user = User::query()->updateOrCreate(['email' => $citizenData['email']], $userValues);
 
-                    'municipality_id' => $municipality->id,
-                    'gender' => $citizenData['gender'],
-                    'birth_date' => $citizenData['birth_date'],
-                    'place_of_birth' => $citizenData['place_of_birth'],
-                    'national_id' => $citizenData['national_id'],
-                    'needs_special_care' => $citizenData['needs_special_care'],
-                    'is_verified' => true,
-                ]
-            );
+            $profileValues = [
+                'municipality_id' => $municipality->id,
+                'gender' => $citizenData['gender'],
+                'birth_date' => $citizenData['birth_date'],
+                'place_of_birth' => $citizenData['place_of_birth'],
+                'national_id' => $citizenData['national_id'],
+                'needs_special_care' => $citizenData['needs_special_care'],
+                'is_verified' => true,
+            ];
 
-            $user->assignRole('citizen');
+            CitizenProfile::query()->updateOrCreate(['user_id' => $user->id], $profileValues);
+
+            $user->syncRoles(['citizen']);
         }
+
+        $this->command?->info('Demo users and six department managers were seeded successfully.');
     }
 }

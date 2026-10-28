@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Authentication;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CitizenProfileResource;
 use App\Http\Traits\ApiResponse;
+
 use App\Models\CitizenProfile;
 use App\Services\Citizen\CitizenVerificationService;
 use Illuminate\Http\Request;
